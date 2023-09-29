@@ -1,0 +1,15 @@
+1, TR
+2, TR
+3, AG
+4, AE
+5, AG
+6, TR
+7, TR
+8, TR
+9, AE
+10, AE
+11, AG
+12, AG
+13, TR
+14, AE
+15, AE
