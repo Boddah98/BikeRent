@@ -47,6 +47,44 @@ loadShowParking = do
             dataRows <- readFileData filePath
             printFormattedData dataRows
         else putStrLn "Error: No se ha podido encontrar el archivo. Por favor verifique la direccion e intente nuevamente.\n"
+-- Función encargada de imprimir el menú que menú de estadísticas del programa 
+showStadisticsMenu :: IO ()
+showStadisticsMenu = do      
+    putStrLn "-> Menú de estadísticas"
+    putStrLn "   1) TOP - 5 Bicicletas con más viajes realizados"
+    putStrLn "   2) TOP - 5 parqueos con más viajes (salida-destino) "
+    putStrLn "   3) TOP - 3 Usuarios con más kilómetros recorridos"
+    putStrLn "   4) Resumen total de viajes"
+    putStrLn "   5) Retroceder al menú principal"
+    putStr "Seleccione una opción: "
+    hFlush stdout
+
+-- Función encargada de gestionar las opciones del menú de estadísticas del programa 
+stadisticsMenu :: IO ()
+stadisticsMenu = do 
+    showStadisticsMenu
+    option <- getLine
+    putStrLn ""
+    case option of
+        "1" -> do
+            putStrLn "Has seleccionado la Opción 1."
+            stadisticsMenu
+        "2" -> do
+            putStrLn "Has seleccionado la Opción 2."
+            stadisticsMenu
+        "3" -> do
+            putStrLn "Has seleccionado la Opción 3."
+            stadisticsMenu
+        "4" -> do
+            putStrLn "Has seleccionado la Opción 4."
+            stadisticsMenu
+        "5" -> do
+            putStrLn "De vuelta al menú principal."
+            mainMenu
+        _   -> do
+            putStrLn "\nError: Opción inválida. Por favor, selecciona una opción válida.\n"
+            stadisticsMenu
+
 
 -- Función para mostrar el menú y obtener la selección del usuario
 showMainMenu :: IO ()
@@ -76,9 +114,8 @@ mainMenu = do
         "3" -> do
             putStrLn "Has seleccionado la Opción 3."
             mainMenu
-        "4" -> do
-            putStrLn "Has seleccionado la Opción 4."
-            mainMenu
+        "4" -> do            
+            stadisticsMenu
         "5" -> putStrLn "Programa finalizado."
         _   -> do
             putStrLn "\nError: Opción inválida. Por favor, selecciona una opción válida.\n"
