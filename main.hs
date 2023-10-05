@@ -40,6 +40,7 @@ formattedList [id, typeI] =
     [id, typeI, "null", "false"]
 formattedList _ = ["null"]  -- Devolver una lista con un solo elemento "null" en caso de error
 
+-- función encargada de cargar los datos de los bicicletas en el archivo "bikeData.txt"
 preChargeBikes :: IO [[String]]
 preChargeBikes = do
     let filePath = "bikeData.txt"
@@ -53,7 +54,7 @@ preChargeBikes = do
         else do
             putStrLn "Error: No se ha podido cargar las bicicletas. Por favor verifica que exista el archivo bikeData.txt.\n"
             return []
-
+-- función encargada de cargar los datos de los parqueos según la dirección ingresada
 loadShowParking :: IO [[String]]
 loadShowParking = do
     putStr "Por favor ingrese la dirección del archivo: "
@@ -108,6 +109,40 @@ stadisticsMenu parkingDataList bikeDataList = do
             putStrLn "\nError: Opción inválida. Por favor, selecciona una opción válida.\n"
             stadisticsMenu parkingDataList bikeDataList
 
+-- Función para mostrar el menú de opciones generales
+showGeneralOptions :: IO ()
+showGeneralOptions = do
+    putStrLn "-> Opciones generales"
+    putStrLn "   1) Consultar bicicletas"
+    putStrLn "   2) Alquilar"
+    putStrLn "   3) Facturar"
+    putStrLn "   4) Volver"
+    putStr "Seleccione una opción: "
+    hFlush stdout
+
+-- Función encargada de gestiones las opciones generales del programa    
+generalOptions :: [[String]] -> [[String]] -> IO ()
+generalOptions parkingDataList bikeDataList = do 
+    showGeneralOptions
+    option <- getLine
+    putStrLn ""
+    case option of
+        "1" -> do
+            putStrLn "Has seleccionado la Opción 1."
+            
+        "2" -> do
+            putStrLn "Has seleccionado la Opción 2."
+            
+        "3" -> do
+            putStrLn "Has seleccionado la Opción 3."
+                  
+        "4" -> do
+            putStrLn "De vuelta al menú principal."
+            mainMenu parkingDataList bikeDataList
+        _   -> do
+            putStrLn "\nError: Opción inválida. Por favor, selecciona una opción válida.\n"
+            generalOptions parkingDataList bikeDataList
+
 
 -- Función para mostrar el menú y obtener la selección del usuario
 showMainMenu :: IO ()
@@ -117,7 +152,8 @@ showMainMenu = do
     putStrLn "   2) Mostrar y asignar bicicletas"
     putStrLn "   3) Cargar usuarios"
     putStrLn "   4) Estadisticas"
-    putStrLn "   5) Salir"
+    putStrLn "   5) Opciones generales"
+    putStrLn "   6) Salir"
     putStr "Seleccione una opción: "
     hFlush stdout
 
@@ -141,7 +177,10 @@ mainMenu parkingDataList bikeDataList = do
             mainMenu parkingDataList bikeDataList
         "4" -> do            
             stadisticsMenu parkingDataList bikeDataList
-        "5" -> putStrLn "Programa finalizado."
+        "5" -> do            
+            putStrLn "Has seleccionado la Opción 5."
+            generalOptions parkingDataList bikeDataList
+        "6" -> putStrLn "Programa finalizado."
         _   -> do
             putStrLn "\nError: Opción inválida. Por favor, selecciona una opción válida.\n"
             mainMenu parkingDataList bikeDataList
