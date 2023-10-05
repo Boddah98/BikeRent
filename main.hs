@@ -5,15 +5,6 @@ import System.Directory (doesFileExist)
 -- cabal update
 -- cabal install --lib split
 
--- Función para asignar los ids de parqueos a las bicicletas
--- Función para asignar los ids de parqueos a las bicicletas
-assignParqueoIds :: [[String]] -> [[String]] -> [[String]]
-assignParqueoIds bikeData assignmentList = map (\[id_bicicleta, tipo, _, _] ->
-    case lookup id_bicicleta assignmentList of
-        Just id_parqueo -> [id_bicicleta, tipo, id_parqueo, "Disponible"]
-        Nothing -> [id_bicicleta, tipo, "Sin Asignar", "No disponible"]
-    ) bikeData
-
 -- Función para imprimir una fila de datos en el formato especificado
 printFormattedRow :: [String] -> IO ()
 printFormattedRow [id, nombre, direccion, provincia, ubicacionX, ubicacionY] = do
