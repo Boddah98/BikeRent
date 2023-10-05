@@ -35,7 +35,26 @@ readFileData filePath = do
         dataRows = map (splitOn ", ") linesOfFile
     return dataRows
 
-loadShowParking :: IO ()
+formattedList :: [String] -> [String]
+formattedList [id, typeI] = 
+    [id, typeI, "null", "false"]
+formattedList _ = ["null"]  -- Devolver una lista con un solo elemento "null" en caso de error
+
+preChargeBikes :: IO [[String]]
+preChargeBikes = do
+    let filePath = "bikeData.txt"
+    -- Verificar si el archivo existe
+    fileExists <- doesFileExist filePath
+    if fileExists
+        then do
+            dataRows <- readFileData filePath
+            let newFormattedList = map formattedList dataRows
+            return newFormattedList
+        else do
+            putStrLn "Error: No se ha podido cargar las bicicletas. Por favor verifica que exista el archivo bikeData.txt.\n"
+            return []
+
+loadShowParking :: IO [[String]]
 loadShowParking = do
     putStr "Por favor ingrese la dirección del archivo: "
     hFlush stdout
@@ -46,7 +65,11 @@ loadShowParking = do
         then do
             dataRows <- readFileData filePath
             printFormattedData dataRows
-        else putStrLn "Error: No se ha podido encontrar el archivo. Por favor verifique la direccion e intente nuevamente.\n"
+            return dataRows  -- Devolver dataRows
+        else do
+            putStrLn "Error: No se ha podido encontrar el archivo. Por favor verifique la dirección e intente nuevamente.\n"
+            return []  -- Devolver una lista vacía en caso de error
+
 -- Función encargada de imprimir el menú que menú de estadísticas del programa 
 showStadisticsMenu :: IO ()
 showStadisticsMenu = do      
@@ -60,30 +83,30 @@ showStadisticsMenu = do
     hFlush stdout
 
 -- Función encargada de gestionar las opciones del menú de estadísticas del programa 
-stadisticsMenu :: IO ()
-stadisticsMenu = do 
+stadisticsMenu :: [[String]] -> [[String]] -> IO ()
+stadisticsMenu parkingDataList bikeDataList = do 
     showStadisticsMenu
     option <- getLine
     putStrLn ""
     case option of
         "1" -> do
             putStrLn "Has seleccionado la Opción 1."
-            stadisticsMenu
+            stadisticsMenu parkingDataList bikeDataList
         "2" -> do
             putStrLn "Has seleccionado la Opción 2."
-            stadisticsMenu
+            stadisticsMenu parkingDataList bikeDataList
         "3" -> do
             putStrLn "Has seleccionado la Opción 3."
-            stadisticsMenu
+            stadisticsMenu parkingDataList bikeDataList
         "4" -> do
             putStrLn "Has seleccionado la Opción 4."
-            stadisticsMenu
+            stadisticsMenu parkingDataList bikeDataList
         "5" -> do
             putStrLn "De vuelta al menú principal."
-            mainMenu
+            mainMenu parkingDataList bikeDataList
         _   -> do
             putStrLn "\nError: Opción inválida. Por favor, selecciona una opción válida.\n"
-            stadisticsMenu
+            stadisticsMenu parkingDataList bikeDataList
 
 
 -- Función para mostrar el menú y obtener la selección del usuario
@@ -99,29 +122,33 @@ showMainMenu = do
     hFlush stdout
 
 -- Función principal para manejar las opciones del menú
-mainMenu :: IO ()
-mainMenu = do
+mainMenu :: [[String]] -> [[String]] -> IO ()
+mainMenu parkingDataList bikeDataList = do
     showMainMenu
     option <- getLine
     putStrLn ""
     case option of
         "1" -> do
-            loadShowParking
-            mainMenu
+            newParkingDataList <- loadShowParking
+            mainMenu newParkingDataList bikeDataList
         "2" -> do
-            putStrLn "Has seleccionado la Opción 2."
-            mainMenu
+            --newBikeDataList <- preChargeBikes
+            putStrLn "Bicicletas:"
+            mapM_ print bikeDataList
+            mainMenu parkingDataList bikeDataList
         "3" -> do
             putStrLn "Has seleccionado la Opción 3."
-            mainMenu
+            mainMenu parkingDataList bikeDataList
         "4" -> do            
-            stadisticsMenu
+            stadisticsMenu parkingDataList bikeDataList
         "5" -> putStrLn "Programa finalizado."
         _   -> do
             putStrLn "\nError: Opción inválida. Por favor, selecciona una opción válida.\n"
-            mainMenu
+            mainMenu parkingDataList bikeDataList
 
 main :: IO ()
 main = do
-    putStrLn "\n¡Bienvenido al sistema de alquiler de bicletas!\n"
-    mainMenu
+    putStrLn "\n¡Bienvenido al sistema de alquiler de bicicletas!\n"
+    let parkingDataList = []  -- Lista vacía para datos de estacionamientos
+    bikeDataList <- preChargeBikes -- Obtener la lista de datos de bicicletas desde preChargeBikes
+    mainMenu parkingDataList bikeDataList
