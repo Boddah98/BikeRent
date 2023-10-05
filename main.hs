@@ -1,10 +1,14 @@
 import System.IO
 import Data.List.Split
 import System.Directory (doesFileExist)
--- Para compilar 
+
+-- ***** Para compilar *****
 -- cabal update
 -- cabal install --lib split
 
+
+-- tipo definido para manejar los datos de las coordenadas
+type Coordinate = (String, String)
 -- Función para imprimir una fila de datos en el formato especificado
 printFormattedRow :: [String] -> IO ()
 printFormattedRow [id, nombre, direccion, provincia, ubicacionX, ubicacionY] = do
@@ -121,6 +125,7 @@ stadisticsMenu parkingDataList bikeDataList = do
         _   -> do
             putStrLn "\nError: Opción inválida. Por favor, selecciona una opción válida.\n"
             stadisticsMenu parkingDataList bikeDataList
+
 
 -- Función para mostrar el menú de opciones generales
 showGeneralOptions :: IO ()
