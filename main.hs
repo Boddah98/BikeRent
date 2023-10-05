@@ -62,6 +62,20 @@ preChargeBikes = do
         else do
             putStrLn "Error: No se ha podido cargar las bicicletas. Por favor verifica que exista el archivo bikeData.txt.\n"
             return []
+
+chargeBikeLocation :: IO [[String]]
+chargeBikeLocation = do
+    let filePath = "bikeLocation.txt"
+    -- Verificar si el archivo existe
+    fileExists <- doesFileExist filePath
+    if fileExists
+        then do
+            dataRows <- readFileData filePath
+            return dataRows
+        else do
+            putStrLn "Error: No se ha podido cargar la ubicación bicicletas. Por favor verifica que exista el archivo bikeLocation.txt.\n"
+            return []
+
 -- función encargada de cargar los datos de los parqueos según la dirección ingresada
 loadShowParking :: IO [[String]]
 loadShowParking = do
