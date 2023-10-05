@@ -5,6 +5,15 @@ import System.Directory (doesFileExist)
 -- cabal update
 -- cabal install --lib split
 
+-- Función para asignar los ids de parqueos a las bicicletas
+-- Función para asignar los ids de parqueos a las bicicletas
+assignParqueoIds :: [[String]] -> [[String]] -> [[String]]
+assignParqueoIds bikeData assignmentList = map (\[id_bicicleta, tipo, _, _] ->
+    case lookup id_bicicleta assignmentList of
+        Just id_parqueo -> [id_bicicleta, tipo, id_parqueo, "Disponible"]
+        Nothing -> [id_bicicleta, tipo, "Sin Asignar", "No disponible"]
+    ) bikeData
+
 -- Función para imprimir una fila de datos en el formato especificado
 printFormattedRow :: [String] -> IO ()
 printFormattedRow [id, nombre, direccion, provincia, ubicacionX, ubicacionY] = do
@@ -17,7 +26,6 @@ printFormattedRow [id, nombre, direccion, provincia, ubicacionX, ubicacionY] = d
     putStrLn ("ubicacion y: " ++ ubicacionY)
     putStrLn("")
 printFormattedRow _ = putStrLn "Error: Datos incompletos o incorrectos en alguna fila del archivo de texto\n."
-
 
 -- Función para imprimir los datos en el formato especificado
 printFormattedData :: [[String]] -> IO ()
@@ -54,7 +62,24 @@ preChargeBikes = do
         else do
             putStrLn "Error: No se ha podido cargar las bicicletas. Por favor verifica que exista el archivo bikeData.txt.\n"
             return []
+<<<<<<< Updated upstream
 -- función encargada de cargar los datos de los parqueos según la dirección ingresada
+=======
+
+chargeBikeLocation :: IO [[String]]
+chargeBikeLocation = do
+    let filePath = "bikeLocation.txt"
+    -- Verificar si el archivo existe
+    fileExists <- doesFileExist filePath
+    if fileExists
+        then do
+            dataRows <- readFileData filePath
+            return dataRows
+        else do
+            putStrLn "Error: No se ha podido cargar la ubicación bicicletas. Por favor verifica que exista el archivo bikeLocation.txt.\n"
+            return []
+
+>>>>>>> Stashed changes
 loadShowParking :: IO [[String]]
 loadShowParking = do
     putStr "Por favor ingrese la dirección del archivo: "
@@ -168,9 +193,11 @@ mainMenu parkingDataList bikeDataList = do
             newParkingDataList <- loadShowParking
             mainMenu newParkingDataList bikeDataList
         "2" -> do
-            --newBikeDataList <- preChargeBikes
-            putStrLn "Bicicletas:"
-            mapM_ print bikeDataList
+            bikeLocationList <- chargeBikeLocation
+            let assignmentListPairs = map (\[id_bicicleta, id_parqueo] -> (id_bicicleta, id_parqueo)) bikeDataList
+            let newBikeDataList = assignParqueoIds bikeDataList assignmentListPairs
+            putStrLn "Biciletas con localizaciones:"
+            mapM_ print newBikeDataList
             mainMenu parkingDataList bikeDataList
         "3" -> do
             putStrLn "Has seleccionado la Opción 3."
