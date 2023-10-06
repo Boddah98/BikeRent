@@ -187,10 +187,8 @@ mainMenu parkingDataList bikeDataList = do
             mainMenu newParkingDataList bikeDataList
         "2" -> do
             bikeLocationList <- chargeBikeLocation
-            let assignmentListPairs = map (\[id_bicicleta, id_parqueo] -> (id_bicicleta, id_parqueo)) bikeDataList
-            let newBikeDataList = assignParqueoIds bikeDataList assignmentListPairs
-            putStrLn "Biciletas con localizaciones:"
-            mapM_ print newBikeDataList
+            --putStrLn "Biciletas con localizaciones:"
+            --mapM_ print newBikeDataList
             mainMenu parkingDataList bikeDataList
         "3" -> do
             putStrLn "Has seleccionado la Opción 3."
