@@ -9,6 +9,9 @@ import System.Directory (doesFileExist)
  
 -- tipo definido para manejar los datos de las coordenadas
 type Coordinate = (String, String)
+
+-- Entradas: La lista con la informacion de los parqueos
+-- Salidas: No posee
 -- Función para imprimir una fila de datos en el formato especificado
 printFormattedRow :: [String] -> IO ()
 printFormattedRow [id, nombre, direccion, provincia, ubicacionX, ubicacionY] = do
@@ -23,12 +26,16 @@ printFormattedRow [id, nombre, direccion, provincia, ubicacionX, ubicacionY] = d
 
 printFormattedRow _ = putStrLn "Error: Datos incompletos o incorrectos en alguna fila del archivo de texto\n."
 
+-- Entradas: La lista con la información de los parqueos
+-- Salidas: No posee
 -- Función para imprimir los datos en el formato especificado
 printFormattedData :: [[String]] -> IO ()
 printFormattedData dataRows = do
     putStrLn "\n-> Parqueos disponibles en el sistema:\n"
     mapM_ printFormattedRow dataRows -- En esta linea se aplica la función printFormattedRow a cada fila de datos en dataRows, lo que resulta en la impresión de cada fila en el formato establecido.
 
+-- Entradas: Un string que contiene la direccion del archivo que se desea leer.
+-- Salidas: Una lista con la informacion de lectura.
 -- Función para leer el archivo y obtener los datos como una lista de listas de strings
 readFileData :: FilePath -> IO [[String]]
 readFileData filePath = do
@@ -39,11 +46,17 @@ readFileData filePath = do
         dataRows = map (splitOn ", ") linesOfFile
     return dataRows
 
+-- Entradas: Una lista con la informacion parcial de las bicicletas
+-- Salidas: Una lista con el neuevo formato
+-- Funcion que agregra los campos adicionales que se necitarán para después
 formattedList :: [String] -> [String]
 formattedList [id, typeI] = 
     [id, typeI, "null", "false"]
 formattedList _ = ["null"]  -- Devolver una lista con un solo elemento "null" en caso de error
 
+-- Entradas: No posee
+-- Salidas: Una lista con la información de los usuarios leida.
+-- Función que carga la información de los usuarios
 chargeUserData :: IO [[String]]
 chargeUserData = do
     let filePath = "userData.txt"
@@ -57,6 +70,8 @@ chargeUserData = do
             putStrLn "Error: No se ha podido cargar los datos de los usuarios. Por favor verifica que exista el archivo userData.txt.\n"
             return []
 
+-- Entradas: No posee.
+-- Salidas: Una lista con la información parcial leida de las bicicletas.
 -- función encargada de cargar los datos de los bicicletas en el archivo "bikeData.txt"
 preChargeBikes :: IO [[String]]
 preChargeBikes = do
@@ -72,6 +87,9 @@ preChargeBikes = do
             putStrLn "Error: No se ha podido cargar las bicicletas. Por favor verifica que exista el archivo bikeData.txt.\n"
             return []
 
+-- Entradas: No posee.
+-- Salidas: Una lista con la asosiación entre bicicleta y parqueo.
+-- Esta función se encarga de leer los datos relacionados a la asosiación
 chargeBikeLocation :: IO [[String]]
 chargeBikeLocation = do
     let filePath = "bikeLocation.txt"
@@ -102,8 +120,9 @@ loadShowParking = do
             putStrLn "Error: No se ha podido encontrar el archivo. Por favor verifique la dirección e intente nuevamente.\n"
             return []  -- Devolver una lista vacía en caso de error
 
+-- Entradas: La lista con la información de los parqueos.
+-- Salidas: No posee.
 -- función que solicita las coordenadas para localizar el parqueo de bicicletas más cercano 
-
 checkForBikes ::  [[String]] -> IO ()
 checkForBikes parkingDataList  = do 
     putStrLn "-> Consulta de bicicletas"
@@ -138,7 +157,6 @@ calculateDistance (x1, y1) (x2, y2) =
     sqrt $ (read x2 - read x1) ** 2 + (read y2 - read y1) ** 2
 
 -- Función encargada de imprimir el menú que menú de estadísticas del programa 
-
 showStadisticsMenu :: IO ()
 showStadisticsMenu = do      
     putStrLn "-> Menú de estadísticas"
@@ -237,9 +255,11 @@ mainMenu parkingDataList bikeDataList userDataList= do
             newParkingDataList <- loadShowParking
             mainMenu newParkingDataList bikeDataList userDataList
         "2" -> do
+            putStrLn "Biciletas registradas:"
+            mapM_ print bikeDataList
             bikeLocationList <- chargeBikeLocation
-            --putStrLn "Biciletas con localizaciones:"
-            --mapM_ print newBikeDataList
+            putStrLn "Ubicación de las biciletas:"
+            mapM_ print bikeLocationList
             mainMenu parkingDataList bikeDataList userDataList
         "3" -> do
             newUserDataList <- chargeUserData
