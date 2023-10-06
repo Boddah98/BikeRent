@@ -88,6 +88,35 @@ loadShowParking = do
             putStrLn "Error: No se ha podido encontrar el archivo. Por favor verifique la dirección e intente nuevamente.\n"
             return []  -- Devolver una lista vacía en caso de error
 
+-- función que solicita las coordenadas para localizar el parqueo de bicicletas más cercano 
+checkForBikes ::  [[String]] -> [[String]] -> IO ()
+checkForBikes parkingDataList bikeDataList = do 
+    putStrLn "-> Consulta de bicicletas"
+    putStrLn "-> Ingrese las coordenadas para localizar el parqueo más cercano"
+    putStr "-> Posición X: "
+    axisX <- getLine
+    putStr "-> Posición Y: "
+    axisY <- getLine
+
+    -- tipo definido para manejar los datos de las coordenadas
+    let userCoordinate = (axisX, axisY) :: Coordinate
+    let nearestParking = findNearestCoordinate userCoordinate parkingDataList
+    putStrLn $ "Parqueo más cercano: " ++ show nearestParking
+    
+-- Función que recorre el arreglo que contiene los datos de los parqueos de bicicletas   
+findNearestCoordinate :: Coordinate -> [[String]] -> Coordinate    
+findNearestCoordinate _ [] = ("No hay datos", "No hay datos")
+findNearestCoordinate coord (x:xs) =
+    let nearest = findNearestCoordinate xs coord
+        currentDistance = calculateDistance coord (x !! 0, x !! 1)
+        nearestDistance = calculateDistance coord nearest
+    in if currentDistance < nearestDistance then (x !! 0, x !! 1) else nearest
+
+-- Función que calcula la distancia entre dos puntos
+calculateDistance :: Coordinate -> Coordinate -> Double
+calculateDistance (x1, y1) (x2, y2) =
+    sqrt $ (read x2 - read x1) ** 2 + (read y2 - read y1) ** 2
+
 -- Función encargada de imprimir el menú que menú de estadísticas del programa 
 showStadisticsMenu :: IO ()
 showStadisticsMenu = do      
