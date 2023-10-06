@@ -6,7 +6,7 @@ import System.Directory (doesFileExist)
 -- cabal update
 -- cabal install --lib split
 
-
+ 
 -- tipo definido para manejar los datos de las coordenadas
 type Coordinate = (String, String)
 -- Función para imprimir una fila de datos en el formato especificado
@@ -20,6 +20,7 @@ printFormattedRow [id, nombre, direccion, provincia, ubicacionX, ubicacionY] = d
     putStrLn ("ubicacion x: " ++ ubicacionX)
     putStrLn ("ubicacion y: " ++ ubicacionY)
     putStrLn("")
+
 printFormattedRow _ = putStrLn "Error: Datos incompletos o incorrectos en alguna fila del archivo de texto\n."
 
 -- Función para imprimir los datos en el formato especificado
@@ -103,35 +104,41 @@ loadShowParking = do
 
 -- función que solicita las coordenadas para localizar el parqueo de bicicletas más cercano 
 
---checkForBikes ::  [[String]] -> [[String]] -> IO ()
---checkForBikes parkingDataList bikeDataList = do 
---    putStrLn "-> Consulta de bicicletas"
---    putStrLn "-> Ingrese las coordenadas para localizar el parqueo más cercano"
---    putStr "-> Posición X: "
---    axisX <- getLine
---    putStr "-> Posición Y: "
---    axisY <- getLine
+checkForBikes ::  [[String]] -> IO ()
+checkForBikes parkingDataList  = do 
+    putStrLn "-> Consulta de bicicletas"
+    putStrLn "-> Ingrese las coordenadas para localizar el parqueo más cercano"
+    putStr "-> Posición X: "
+    axisX <- getLine
+    putStr "-> Posición Y: "
+    axisY <- getLine
 
     -- tipo definido para manejar los datos de las coordenadas
---    let userCoordinate = (axisX, axisY) :: Coordinate
---    let nearestParking = findNearestCoordinate userCoordinate parkingDataList
---    putStrLn $ "Parqueo más cercano: " ++ show nearestParking
+    let userCoordinate = (axisX, axisY) :: Coordinate
+    let nearestParking = findNearestCoordinate userCoordinate parkingDataList
+    putStrLn $ "Parqueo más cercano: " ++ show nearestParking
     
 -- Función que recorre el arreglo que contiene los datos de los parqueos de bicicletas   
---findNearestCoordinate :: Coordinate -> [[String]] -> Coordinate    
---findNearestCoordinate _ [] = ("No hay datos", "No hay datos")
---findNearestCoordinate coord (x:xs) =
---    let nearest = findNearestCoordinate xs coord
---        currentDistance = calculateDistance coord (x !! 0, x !! 1)
---        nearestDistance = calculateDistance coord nearest
---    in if currentDistance < nearestDistance then (x !! 0, x !! 1) else nearest
+findNearestCoordinate :: Coordinate -> [[String]] -> Coordinate    
+findNearestCoordinate _ [] = ("No hay datos", "No hay datos")
+findNearestCoordinate coord dataList =
+    let nearest = foldl (compareDistance coord) (head dataList) (tail dataList)
+    in (nearest !! 4, nearest !! 5)
 
--- Función que calcula la distancia entre dos puntos
+compareDistance :: Coordinate -> [String] -> [String] -> [String]
+compareDistance coord p1 p2 =
+    if calculateDistance coord (p1 !! 4, p1 !! 5) < calculateDistance coord (p2 !! 4, p2 !! 5)
+        then p1
+        else p2
+-- Función que calcula la distancia entre dos puntos, la cual es vista en matemática general
+-- y adaptada con las funciones del lenguaje haskell
+-- https://es.khanacademy.org/math/geometry/hs-geo-analytic-geometry/hs-geo-distance-and-midpoints/v/distance-formula#:~:text=Podemos%20volver%20a%20escribir%20el,distancia%20entre%20cualesquiera%20dos%20puntos.
 calculateDistance :: Coordinate -> Coordinate -> Double
 calculateDistance (x1, y1) (x2, y2) =
     sqrt $ (read x2 - read x1) ** 2 + (read y2 - read y1) ** 2
 
 -- Función encargada de imprimir el menú que menú de estadísticas del programa 
+
 showStadisticsMenu :: IO ()
 showStadisticsMenu = do      
     putStrLn "-> Menú de estadísticas"
@@ -189,7 +196,8 @@ generalOptions parkingDataList bikeDataList userDataList= do
     putStrLn ""
     case option of
         "1" -> do
-            putStrLn "Has seleccionado la Opción 1."
+            checkForBikes parkingDataList 
+
             
         "2" -> do
             putStrLn "Has seleccionado la Opción 2."
