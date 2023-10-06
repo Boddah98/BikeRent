@@ -102,28 +102,29 @@ loadShowParking = do
             return []  -- Devolver una lista vacía en caso de error
 
 -- función que solicita las coordenadas para localizar el parqueo de bicicletas más cercano 
-checkForBikes ::  [[String]] -> [[String]] -> IO ()
-checkForBikes parkingDataList bikeDataList = do 
-    putStrLn "-> Consulta de bicicletas"
-    putStrLn "-> Ingrese las coordenadas para localizar el parqueo más cercano"
-    putStr "-> Posición X: "
-    axisX <- getLine
-    putStr "-> Posición Y: "
-    axisY <- getLine
+
+--checkForBikes ::  [[String]] -> [[String]] -> IO ()
+--checkForBikes parkingDataList bikeDataList = do 
+--    putStrLn "-> Consulta de bicicletas"
+--    putStrLn "-> Ingrese las coordenadas para localizar el parqueo más cercano"
+--    putStr "-> Posición X: "
+--    axisX <- getLine
+--    putStr "-> Posición Y: "
+--    axisY <- getLine
 
     -- tipo definido para manejar los datos de las coordenadas
-    let userCoordinate = (axisX, axisY) :: Coordinate
-    let nearestParking = findNearestCoordinate userCoordinate parkingDataList
-    putStrLn $ "Parqueo más cercano: " ++ show nearestParking
+--    let userCoordinate = (axisX, axisY) :: Coordinate
+--    let nearestParking = findNearestCoordinate userCoordinate parkingDataList
+--    putStrLn $ "Parqueo más cercano: " ++ show nearestParking
     
 -- Función que recorre el arreglo que contiene los datos de los parqueos de bicicletas   
-findNearestCoordinate :: Coordinate -> [[String]] -> Coordinate    
-findNearestCoordinate _ [] = ("No hay datos", "No hay datos")
-findNearestCoordinate coord (x:xs) =
-    let nearest = findNearestCoordinate xs coord
-        currentDistance = calculateDistance coord (x !! 0, x !! 1)
-        nearestDistance = calculateDistance coord nearest
-    in if currentDistance < nearestDistance then (x !! 0, x !! 1) else nearest
+--findNearestCoordinate :: Coordinate -> [[String]] -> Coordinate    
+--findNearestCoordinate _ [] = ("No hay datos", "No hay datos")
+--findNearestCoordinate coord (x:xs) =
+--    let nearest = findNearestCoordinate xs coord
+--        currentDistance = calculateDistance coord (x !! 0, x !! 1)
+--        nearestDistance = calculateDistance coord nearest
+--    in if currentDistance < nearestDistance then (x !! 0, x !! 1) else nearest
 
 -- Función que calcula la distancia entre dos puntos
 calculateDistance :: Coordinate -> Coordinate -> Double
