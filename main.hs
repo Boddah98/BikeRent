@@ -234,10 +234,9 @@ mainMenu parkingDataList bikeDataList userDataList= do
             --mapM_ print newBikeDataList
             mainMenu parkingDataList bikeDataList userDataList
         "3" -> do
-            putStrLn "Entron aqui"
-            --newUserDataList <- chargeUserData
-            --putStrLn "Datos de usuarios:"
-            --mapM_ print newUserDataList
+            newUserDataList <- chargeUserData
+            putStrLn "Datos de usuarios:"
+            mapM_ print newUserDataList
             mainMenu parkingDataList bikeDataList userDataList
 
         "4" -> do            
